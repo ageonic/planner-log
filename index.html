@@ -11,5 +11,89 @@
       rel="stylesheet"
     />
   </head>
-  <body></body>
+  <body class="bg-gray-100">
+    <div class="container mx-auto p-2">
+      <!-- list of tasks to complete today -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+        <div class="p-4 bg-white rounded-md border-2 border-gray-200">
+          <button
+            class="
+              float-right
+              h-8
+              w-8
+              bg-indigo-400
+              rounded-full
+              flex
+              items-center
+              justify-center
+              hover:bg-opacity-80
+              focus:outline-none focus:ring-4 focus:ring-indigo-200
+            "
+          >
+            <svg
+              class="h-4 w-4 text-white"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+          </button>
+          <h1 class="font-mono tracking-wide font-medium truncate text-md">
+            Complete this task
+          </h1>
+        </div>
+        <div class="p-4 bg-white rounded-md border-2 border-gray-200">
+          <button
+            class="
+              float-right
+              h-8
+              w-8
+              bg-indigo-400
+              rounded-full
+              flex
+              items-center
+              justify-center
+              hover:bg-opacity-80
+              focus:outline-none focus:ring-4 focus:ring-indigo-200
+            "
+          >
+            <svg
+              class="h-4 w-4 text-white"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" />
+              <rect x="4" y="4" width="16" height="16" rx="2" />
+            </svg>
+          </button>
+          <h1 class="font-mono tracking-wide font-medium truncate text-md">
+            Complete this task
+          </h1>
+        </div>
+      </div>
+
+      <!-- random tasks throughout the day -->
+      <input
+        placeholder="start a random task..."
+        class="
+          my-2
+          w-full
+          p-2
+          rounded-md
+          focus:outline-none focus:ring-2 focus:ring-indigo-200
+          font-mono
+        "
+      />
+    </div>
+  </body>
 </html>
