@@ -1,14 +1,11 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
+from config import config_map, default_config_name
+from models import db
 
 # initialize global extensions
-db = SQLAlchemy()
 migrate = Migrate()
-
-from config import config_map, default_config_name
-
 
 def create_app(config_name=default_config_name):
     # initialize the flask app
