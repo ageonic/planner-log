@@ -55,6 +55,24 @@ class TaskTree(Resource):
         return Task.query.get_or_404(id)
 
 
+class TaskList(Resource):
+    """Retrieve a list of all tasks or create a single task."""
+
+    @marshal_with(task_serializer)
+    def get(self):
+        return Task.query.all()
+
+    @marshal_with(task_serializer)
+    def post(self):
+        task = Task(
+            name=request.args.get("name"), parent_id=request.args.get("parent_id")
+        )
+        db.session.add(task)
+        db.session.commit()
+        return task
+
+
 # make routes available to the api
-api.add_resource(TaskEntry, "/<int:id>")
+api.add_resource(TaskList, "/")
 api.add_resource(TaskTree, "/tree/<int:id>")
+api.add_resource(TaskEntry, "/<int:id>")
