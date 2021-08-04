@@ -7,7 +7,9 @@ from models import db, Task
 bp = Blueprint("task", __name__)
 api = Api(bp)
 
-# objects that will be used to serialize flask-sqlalchemy models
+## objects that will be used to serialize flask-sqlalchemy models
+
+# base representation of a task
 task_serializer = {
     "id": fields.Integer,
     "name": fields.String,
@@ -15,7 +17,10 @@ task_serializer = {
     "parent_id": fields.Integer,
 }
 
-task_serializer["subtasks"] = fields.Nested(task_serializer)
+# task along with subtasks
+# this includes subtasks for subtasks as well
+task_tree_serializer = {k: v for k, v in task_serializer.items()}
+task_tree_serializer["subtasks"] = fields.Nested(task_tree_serializer)
 
 
 class TaskEntry(Resource):
@@ -42,5 +47,14 @@ class TaskEntry(Resource):
         return "", 201
 
 
+class TaskTree(Resource):
+    """Retrieve a task along with all descendant tasks."""
+
+    @marshal_with(task_tree_serializer)
+    def get(self, id):
+        return Task.query.get_or_404(id)
+
+
 # make routes available to the api
 api.add_resource(TaskEntry, "/<int:id>")
+api.add_resource(TaskTree, "/tree/<int:id>")
