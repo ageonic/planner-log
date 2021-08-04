@@ -13,7 +13,10 @@ class Task(db.Model):
     parent_id = db.Column(db.Integer, db.ForeignKey("task.id"))
 
     subtasks = db.relationship(
-        "Task", backref=db.backref("parent", remote_side=[id]), lazy=True
+        "Task",
+        backref=db.backref("parent", remote_side=[id]),
+        lazy=True,
+        cascade="all,delete",
     )
 
     def __repr__(self):

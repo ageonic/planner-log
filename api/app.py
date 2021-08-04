@@ -7,6 +7,7 @@ from models import db
 # initialize global extensions
 migrate = Migrate()
 
+
 def create_app(config_name=default_config_name):
     # initialize the flask app
     app = Flask(__name__)
