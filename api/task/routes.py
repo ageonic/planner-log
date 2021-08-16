@@ -32,10 +32,12 @@ class TaskEntry(Resource):
 
     @marshal_with(task_serializer)
     def put(self, id):
+        data = request.get_json()
         task = Task.query.get_or_404(id)
-        task.name = request.args.get("name") or task.name
-        task.complete = request.args.get("complete") == "1"
-        task.parent_id = request.args.get("parent_id") or task.parent_id
+
+        for k, v in data.items():
+            setattr(task, k, v)
+
         db.session.add(task)
         db.session.commit()
         return task
@@ -64,8 +66,10 @@ class TaskList(Resource):
 
     @marshal_with(task_serializer)
     def post(self):
+        data = request.get_json()
         task = Task(
-            name=request.args.get("name"), parent_id=request.args.get("parent_id")
+            name=data.get("name"),
+            parent_id=data.get("parent_id"),
         )
         db.session.add(task)
         db.session.commit()
@@ -73,6 +77,6 @@ class TaskList(Resource):
 
 
 # make routes available to the api
-api.add_resource(TaskList, "/")
+api.add_resource(TaskList, "", "/")
 api.add_resource(TaskTree, "/tree/<int:id>")
 api.add_resource(TaskEntry, "/<int:id>")
