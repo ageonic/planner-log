@@ -15,7 +15,7 @@
           focus:shadow-outline
         "
         type="text"
-        v-model="form.name"
+        v-model="name"
         required
       />
     </div>
@@ -41,25 +41,32 @@ import axios from "axios";
 
 export default {
   props: {
+    id: { type: Number },
+    name: { type: String },
+    complete: { type: Boolean },
     parentId: { type: Number, default: 0 },
-  },
-  data() {
-    return {
-      errors: [],
-      form: {
-        name: null,
-        complete: false,
-        parent_id: this.parentId,
+    mode: {
+      validator(value) {
+        return ["create"].includes(value);
       },
-    };
-  },
-  methods: {
-    createTask() {
-      axios
-        .post("/api/task", this.form)
-        .then((res) => this.$emit("create"))
-        .catch((error) => console.log(error));
+      required: true,
     },
+  },
+  setup(props, { emit }) {
+    const createTask = () => {
+      axios
+        .post("/api/task", {
+          name: props.name,
+          complete: props.complete,
+          parent_id: props.parent_id,
+        })
+        .then((res) => emit("create"))
+        .catch((error) => console.log(error));
+    };
+
+    return {
+      createTask,
+    };
   },
 };
 </script>
