@@ -35,8 +35,8 @@
       <main class="w-full bg-gray-50 border-t border-b p-4">
         <slot name="content"></slot>
       </main>
-      <footer class="w-full bg-white flex items-center justify-between">
-        <button class="p-4" :title="closeLabel" @click="closeModal">
+      <footer class="w-full bg-white flex items-center justify-between p-4">
+        <button :title="closeLabel" @click="closeModal">
           {{ closeLabel }}
         </button>
         <slot name="actions"></slot>
