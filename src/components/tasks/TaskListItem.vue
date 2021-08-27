@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3 rounded-sm bg-white flex items-center">
+  <div class="p-3 rounded-sm shadow-sm bg-white flex items-center">
     <div class="mx-3">
       <StatusIndicator :color="color" />
     </div>
