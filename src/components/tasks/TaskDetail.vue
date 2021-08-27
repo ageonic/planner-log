@@ -69,14 +69,28 @@
         @cancel="showSubtaskCreator = false"
       />
     </section>
-    <section name="footer" class="p-8"></section>
+    <section name="footer" class="px-8 py-4">
+      <button
+        @click="deleteTask"
+        class="
+          p-2
+          rounded
+          border border-transparent
+          hover:border-gray-200
+          focus:outline-none
+          focus:ring-2 focus:ring-indigo-200
+        "
+      >
+        Delete task
+      </button>
+    </section>
   </article>
 </template>
 
 <script>
 import { onMounted, reactive, ref } from "@vue/runtime-core";
 import { PlusIcon } from "@heroicons/vue/solid";
-import { getOneTask } from "../../services/TaskApi.js";
+import { deleteOneTask, getOneTask } from "../../services/TaskApi.js";
 import StatusIndicator from "../ui/StatusIndicator.vue";
 import TaskEditor from "./TaskEditor.vue";
 
@@ -85,7 +99,7 @@ export default {
   props: {
     taskId: { type: Number, required: true },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const task = reactive({});
     const editMode = ref(false);
     const showSubtaskCreator = ref(false);
@@ -95,13 +109,17 @@ export default {
       editMode.value = false;
     };
 
+    const deleteTask = () => {
+      deleteOneTask(props.taskId).then(emit("delete"));
+    };
+
     onMounted(() => {
       getOneTask(props.taskId).then((t) => {
         Object.assign(task, t);
       });
     });
 
-    return { task, editMode, showSubtaskCreator, handleUpdate };
+    return { task, editMode, showSubtaskCreator, handleUpdate, deleteTask };
   },
 };
 </script>
