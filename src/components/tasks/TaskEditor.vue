@@ -40,6 +40,7 @@
       </button>
       <button
         type="button"
+        @click="cancel"
         class="
           ml-2
           py-2
@@ -72,7 +73,8 @@ export default {
     description: { type: String, default: "" },
     parentId: { type: Number, default: 0 },
   },
-  setup(props) {
+  emits: ["cancel", "create", "update"],
+  setup(props, { emit }) {
     const form = reactive({
       name: props.name,
       parent_id: props.parentId,
@@ -80,13 +82,17 @@ export default {
 
     const submit = () => {
       if (props.taskId) {
-        updateOneTask(props.taskId, form);
+        updateOneTask(props.taskId, form).then((t) => emit("update", t));
       } else {
-        createOneTask(form);
+        createOneTask(form).then((t) => emit("create", t));
       }
     };
 
-    return { form, submit };
+    const cancel = () => {
+      emit("cancel");
+    };
+
+    return { form, submit, cancel };
   },
 };
 </script>
