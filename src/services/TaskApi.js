@@ -36,3 +36,12 @@ export function updateOneTask(taskId, taskData) {
     })
     .catch((error) => console.error(error.message));
 }
+
+export function getAllTasks() {
+  return axios
+    .get("/api/task")
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => console.error(error.message));
+}
