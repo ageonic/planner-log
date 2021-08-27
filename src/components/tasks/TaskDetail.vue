@@ -12,7 +12,9 @@
             @click="editMode = true"
             class="
               p-2
-              rounded-md
+              rounded
+              border border-transparent
+              hover:border-gray-200
               focus:outline-none
               focus:ring-2 focus:ring-indigo-200
             "
@@ -45,6 +47,27 @@
       class="p-8 bg-gray-50 border-t-2 border-b-2 border-gray-100"
     >
       <h2>Subtasks for {{ task.name }}</h2>
+      <button
+        v-if="!showSubtaskCreator"
+        @click="showSubtaskCreator = true"
+        class="
+          mt-2
+          p-2
+          rounded
+          border border-gray-200
+          hover:bg-gray-200
+          focus:outline-none
+          focus:ring-2 focus:ring-indigo-200
+        "
+      >
+        <PlusIcon class="h-4 w-4" />
+      </button>
+      <TaskEditor
+        v-if="showSubtaskCreator"
+        :parentId="task.id"
+        @create="showSubtaskCreator = false"
+        @cancel="showSubtaskCreator = false"
+      />
     </section>
     <section name="footer" class="p-8"></section>
   </article>
@@ -52,18 +75,20 @@
 
 <script>
 import { onMounted, reactive, ref } from "@vue/runtime-core";
+import { PlusIcon } from "@heroicons/vue/solid";
 import { getOneTask } from "../../services/TaskApi.js";
 import StatusIndicator from "../ui/StatusIndicator.vue";
 import TaskEditor from "./TaskEditor.vue";
 
 export default {
-  components: { StatusIndicator, TaskEditor },
+  components: { PlusIcon, StatusIndicator, TaskEditor },
   props: {
     taskId: { type: Number, required: true },
   },
   setup(props) {
     const task = reactive({});
     const editMode = ref(false);
+    const showSubtaskCreator = ref(false);
 
     const handleUpdate = (updatedTask) => {
       Object.assign(task, updatedTask);
@@ -76,7 +101,7 @@ export default {
       });
     });
 
-    return { task, editMode, handleUpdate };
+    return { task, editMode, showSubtaskCreator, handleUpdate };
   },
 };
 </script>
