@@ -37,6 +37,17 @@ export function updateOneTask(taskId, taskData) {
     .catch((error) => console.error(error.message));
 }
 
+export function deleteOneTask(taskId) {
+  if (!taskId) {
+    console.error("no task id specified");
+    return;
+  }
+
+  return axios
+    .delete(`/api/task/${taskId}`)
+    .catch((error) => console.error(error.message));
+}
+
 export function getAllTasks() {
   return axios
     .get("/api/task")
