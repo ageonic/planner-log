@@ -1,15 +1,53 @@
+from datetime import datetime
+from sqlalchemy import MetaData
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+
+# naming convention definitions for the db
+# this helps prevent errors during db migrations
+metadata = MetaData(
+    naming_convention={
+        "ix": "ix_%(column_0_label)s",
+        "uq": "uq_%(table_name)s_%(column_0_name)s",
+        "ck": "ck_%(table_name)s_%(constraint_name)s",
+        "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+        "pk": "pk_%(table_name)s",
+    }
+)
 
 # initialize the flask-sqlalchemy extension
 # the extension is bound to the flask app in app.py
 # it is initialized here to prevent circular dependency between app.py and models.py
-db = SQLAlchemy()
+db = SQLAlchemy(metadata=metadata)
+
+
+class User(db.Model):
+    """User model for storing details about a user"""
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(255), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+    created_date = db.Column(db.DateTime, nullable=False)
+
+    tasks = db.relationship("Task", backref=db.backref("user"), lazy=True)
+
+    def __init__(self, username, password) -> None:
+        self.username = username
+        self.password_hash = generate_password_hash(password)
+        self.created_date = datetime.now()
+
+    def __repr__(self):
+        return "<User {}>".format(self.username)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     complete = db.Column(db.Boolean, default=False, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     parent_id = db.Column(db.Integer, db.ForeignKey("task.id"))
 
     subtasks = db.relationship(

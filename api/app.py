@@ -15,7 +15,7 @@ def create_app(config_name=default_config_name):
 
     # initialize flask extensions with app
     db.init_app(app)
-    migrate.init_app(app, db)
+    migrate.init_app(app, db, render_as_batch=True)
 
     # register flask blueprints
     from task.routes import bp
