@@ -1,7 +1,15 @@
 from datetime import datetime
 from sqlalchemy import MetaData
+
+from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import (
+    TimedJSONWebSignatureSerializer as Serializer,
+    BadSignature,
+    SignatureExpired,
+)
+
 
 # naming convention definitions for the db
 # this helps prevent errors during db migrations
@@ -41,6 +49,21 @@ class User(db.Model):
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def generate_auth_token(self, expiration):
+        serializer = Serializer(current_app.config["SECRET_KEY"], expires_in=expiration)
+        return serializer.dumps({"user_id": self.id})
+
+    @staticmethod
+    def verify_auth_token(token):
+        serializer = Serializer(current_app.config["SECRET_KEY"])
+        try:
+            data = serializer.loads(token)
+            return User.query.get(data["user_id"])
+        except BadSignature:
+            return None
+        except SignatureExpired:
+            return None
 
 
 class Task(db.Model):
