@@ -18,6 +18,7 @@ class Config:
     TESTING = False
     SECRET_KEY = os.getenv("SECRET_KEY", os.urandom(16))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    AUTH_TOKEN_TIMEOUT = os.getenv("AUTH_TOKEN_TIMEOUT", 3600)
 
 
 class ProductionConfig(Config):

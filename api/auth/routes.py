@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 from flask_restful import Api, Resource
 from models import User
 
@@ -29,7 +29,9 @@ class UserLogin(Resource):
                 if user and user.verify_password(request.authorization.password):
                     return {
                         "status": "success",
-                        "token": user.generate_auth_token(10).decode(),
+                        "token": user.generate_auth_token(
+                            current_app.config.get("AUTH_TOKEN_TIMEOUT")
+                        ).decode(),
                     }, 200
                 else:
                     return {
