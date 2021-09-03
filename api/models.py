@@ -82,3 +82,7 @@ class Task(db.Model):
 
     def __repr__(self):
         return "<Task {}:{}>".format(self.id, self.name)
+
+    def owned_by_user(self, user_id):
+        """Determines whether the current task is related to the specified user"""
+        return self.user_id == user_id
