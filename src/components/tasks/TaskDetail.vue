@@ -5,8 +5,12 @@
       class="border-b-2 border-gray-100 flex items-center px-8 py-4"
     >
       <div class="flex flex-grow items-center">
-        <div class="mr-2"><StatusIndicator color="#7896FF" /></div>
-        <div class="flex-grow capitalize text-gray-300">task status</div>
+        <div class="mr-2">
+          <StatusIndicator :color="task.status && task.status.color" />
+        </div>
+        <div class="flex-grow capitalize text-gray-300">
+          {{ task.status && task.status.label }}
+        </div>
         <div v-if="!editMode">
           <button
             @click="editMode = true"

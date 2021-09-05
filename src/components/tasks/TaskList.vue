@@ -16,8 +16,8 @@
     <TaskListItem
       :taskId="task.id"
       :name="task.name"
-      status="in progress"
-      color="#FF8B72"
+      :status="task.status.label"
+      :color="task.status.color"
     />
   </div>
 </template>

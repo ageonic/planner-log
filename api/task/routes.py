@@ -1,30 +1,13 @@
 from flask import g, Blueprint, abort, request
-from flask_restful import Api, Resource, fields, marshal_with
+from flask_restful import Api, Resource, marshal_with
 from auth.helper import token_required
+from task.serializers import task_serializer, task_tree_serializer
 
 from models import db, Task
 
 # initialize blueprint and api
 bp = Blueprint("task", __name__)
 api = Api(bp)
-
-## objects that will be used to serialize flask-sqlalchemy models
-
-# base representation of a task
-task_serializer = {
-    "id": fields.Integer,
-    "name": fields.String,
-    "complete": fields.Boolean,
-    "description": fields.String,
-    "due_date": fields.DateTime,
-    "created_date": fields.DateTime,
-    "parent_id": fields.Integer,
-}
-
-# task along with subtasks
-# this includes subtasks for subtasks as well
-task_tree_serializer = {k: v for k, v in task_serializer.items()}
-task_tree_serializer["subtasks"] = fields.Nested(task_tree_serializer)
 
 
 def get_task_or_403(task_id):
