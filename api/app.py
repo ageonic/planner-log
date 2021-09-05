@@ -15,11 +15,13 @@ def create_app(config_name=default_config_name):
 
     # initialize flask extensions with app
     db.init_app(app)
-    migrate.init_app(app, db)
+    migrate.init_app(app, db, render_as_batch=True)
 
     # register flask blueprints
-    from task.routes import bp
+    from auth.routes import bp as auth_bp
+    from task.routes import bp as task_bp
 
-    app.register_blueprint(bp, url_prefix="/api/task")
+    app.register_blueprint(auth_bp, url_prefix="/api/auth")
+    app.register_blueprint(task_bp, url_prefix="/api/task")
 
     return app

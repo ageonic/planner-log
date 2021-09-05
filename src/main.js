@@ -2,4 +2,11 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import "./index.css";
 
-createApp(App).mount("#app");
+import { router } from "./router";
+import UserStore from "./store/User";
+
+const app = createApp(App);
+
+app.use(router);
+app.provide("user", UserStore);
+app.mount("#app");
