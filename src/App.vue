@@ -1,13 +1,21 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <div class="container mx-auto">
+    <router-view />
+  </div>
 </template>
 
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
+<script>
+import { inject } from "@vue/runtime-core";
+import { router } from "./router";
 
-// This starter template is using Vue 3 experimental <script setup> SFCs
-// Check out https://github.com/vuejs/rfcs/blob/master/active-rfcs/0040-script-setup.md
+export default {
+  setup() {
+    const user = inject("user");
+
+    // redirect the user to the login page if the auth token is not set
+    if (!user.getters.authToken()) router.push("/login");
+  },
+};
 </script>
 
 <style>
@@ -15,7 +23,6 @@ import HelloWorld from './components/HelloWorld.vue'
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   margin-top: 60px;
 }

@@ -9,12 +9,13 @@
 <script>
 import LoginForm from "../components/LoginForm.vue";
 import UserAuth from "../services/UserAuth";
+import { router } from "../router";
 
 export default {
   components: { LoginForm },
   setup() {
     const submit = (auth_data) => {
-      UserAuth.login(auth_data);
+      UserAuth.login(auth_data).then(() => router.push("/"));
     };
 
     return { submit };
