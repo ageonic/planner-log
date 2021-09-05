@@ -3,7 +3,7 @@ import UserStore from "../store/User";
 
 class UserAuth {
   login(auth_data) {
-    axios
+    return axios
       .post(
         "/api/auth/login",
         {},
