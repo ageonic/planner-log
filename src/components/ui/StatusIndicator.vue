@@ -7,7 +7,7 @@
 <script>
 export default {
   props: {
-    color: { type: String, default: "red" },
+    color: { type: String, default: "transparent" },
   },
 };
 </script>
