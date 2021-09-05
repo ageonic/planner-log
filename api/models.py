@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import MetaData
 
 from flask import current_app
@@ -42,7 +42,7 @@ class User(db.Model):
     def __init__(self, username, password) -> None:
         self.username = username
         self.password_hash = generate_password_hash(password)
-        self.created_date = datetime.now()
+        self.created_date = datetime.now(tz=timezone.utc)
 
     def __repr__(self):
         return "<User {}>".format(self.username)
@@ -70,8 +70,11 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     complete = db.Column(db.Boolean, default=False, nullable=False)
+    description = db.Column(db.Text)
+    due_date = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     parent_id = db.Column(db.Integer, db.ForeignKey("task.id"))
+    created_date = db.Column(db.DateTime, nullable=False)
 
     subtasks = db.relationship(
         "Task",
@@ -79,6 +82,10 @@ class Task(db.Model):
         lazy=True,
         cascade="all,delete",
     )
+
+    def __init__(self, **kwargs):
+        super(Task, self).__init__(**kwargs)
+        self.created_date = datetime.now(tz=timezone.utc)
 
     def __repr__(self):
         return "<Task {}:{}>".format(self.id, self.name)

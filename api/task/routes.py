@@ -15,6 +15,9 @@ task_serializer = {
     "id": fields.Integer,
     "name": fields.String,
     "complete": fields.Boolean,
+    "description": fields.String,
+    "due_date": fields.DateTime,
+    "created_date": fields.DateTime,
     "parent_id": fields.Integer,
 }
 

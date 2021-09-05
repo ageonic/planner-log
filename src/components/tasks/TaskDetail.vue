@@ -26,17 +26,15 @@
     </section>
     <section v-if="!editMode" name="details" class="p-8">
       <h1 class="text-2xl">{{ task.name }}</h1>
-      <p class="mt-6 tracking-wider leading-6">
-        Candy chocolate cake toffee powder ice cream cheesecake. Candy canes
-        cake jujubes dragée jujubes croissant lemon drops. Bear claw jelly-o
-        jelly-o donut dragée candy candy canes jujubes chupa chups. Jelly halvah
-        candy canes marshmallow tart.
+      <p class="mt-6 tracking-wider leading-6 whitespace-pre-wrap">
+        {{ task.description }}
       </p>
     </section>
     <section v-if="editMode" name="task-editor" class="p-8">
       <TaskEditor
         :taskId="task.id"
         :name="task.name"
+        :description="task.description"
         :parentId="task.parent_id"
         @update="handleUpdate"
         @cancel="editMode = false"
@@ -47,6 +45,7 @@
       class="p-8 bg-gray-50 border-t-2 border-b-2 border-gray-100"
     >
       <h2>Subtasks for {{ task.name }}</h2>
+      <TaskList :tasks="task.subtasks" />
       <button
         v-if="!showSubtaskCreator"
         @click="showSubtaskCreator = true"
@@ -65,7 +64,10 @@
       <TaskEditor
         v-if="showSubtaskCreator"
         :parentId="task.id"
-        @create="showSubtaskCreator = false"
+        @create="
+          refresh();
+          showSubtaskCreator = false;
+        "
         @cancel="showSubtaskCreator = false"
       />
     </section>
@@ -93,9 +95,10 @@ import { PlusIcon } from "@heroicons/vue/solid";
 import { deleteOneTask, getOneTask } from "../../services/TaskApi.js";
 import StatusIndicator from "../ui/StatusIndicator.vue";
 import TaskEditor from "./TaskEditor.vue";
+import TaskList from "./TaskList.vue";
 
 export default {
-  components: { PlusIcon, StatusIndicator, TaskEditor },
+  components: { PlusIcon, StatusIndicator, TaskEditor, TaskList },
   props: {
     taskId: { type: Number, required: true },
   },
@@ -113,13 +116,24 @@ export default {
       deleteOneTask(props.taskId).then(emit("delete"));
     };
 
-    onMounted(() => {
+    const refresh = () => {
       getOneTask(props.taskId).then((t) => {
         Object.assign(task, t);
       });
+    };
+
+    onMounted(() => {
+      refresh();
     });
 
-    return { task, editMode, showSubtaskCreator, handleUpdate, deleteTask };
+    return {
+      task,
+      editMode,
+      showSubtaskCreator,
+      handleUpdate,
+      deleteTask,
+      refresh,
+    };
   },
 };
 </script>

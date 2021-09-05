@@ -77,6 +77,7 @@ export default {
   setup(props, { emit }) {
     const form = reactive({
       name: props.name,
+      description: props.description,
       parent_id: props.parentId,
     });
 
