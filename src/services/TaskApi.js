@@ -1,4 +1,18 @@
 import axios from "axios";
+import UserStore from "../store/User";
+
+axios.interceptors.request.use(
+  (config) => {
+    const token = UserStore.getters.authToken();
+    if (token) {
+      config.headers["Authorization"] = "Bearer " + token;
+    }
+    return config;
+  },
+  (error) => {
+    Promise.reject(error);
+  }
+);
 
 export function createOneTask(taskData) {
   return axios
@@ -6,7 +20,7 @@ export function createOneTask(taskData) {
     .then((response) => {
       return response.data;
     })
-    .catch((error) => console.error(error.message));
+    .catch((error) => console.error(error.response.data.message));
 }
 
 export function getOneTask(taskId) {
@@ -16,11 +30,11 @@ export function getOneTask(taskId) {
   }
 
   return axios
-    .get(`/api/task/${taskId}`)
+    .get(`/api/task/tree/${taskId}`)
     .then((response) => {
       return response.data;
     })
-    .catch((error) => console.error(error.message));
+    .catch((error) => console.log(error.response.data.message));
 }
 
 export function updateOneTask(taskId, taskData) {
@@ -34,7 +48,7 @@ export function updateOneTask(taskId, taskData) {
     .then((response) => {
       return response.data;
     })
-    .catch((error) => console.error(error.message));
+    .catch((error) => console.error(error.response.data.message));
 }
 
 export function deleteOneTask(taskId) {
@@ -45,7 +59,7 @@ export function deleteOneTask(taskId) {
 
   return axios
     .delete(`/api/task/${taskId}`)
-    .catch((error) => console.error(error.message));
+    .catch((error) => console.error(error.response.data.message));
 }
 
 export function getAllTasks() {
@@ -54,5 +68,5 @@ export function getAllTasks() {
     .then((response) => {
       return response.data;
     })
-    .catch((error) => console.error(error.message));
+    .catch((error) => console.error(error.response.data.message));
 }
