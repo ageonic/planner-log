@@ -38,6 +38,7 @@ class User(db.Model):
     created_date = db.Column(db.DateTime, nullable=False)
 
     tasks = db.relationship("Task", backref=db.backref("user"), lazy=True)
+    task_statuses = db.relationship("TaskStatus", backref=db.backref("user"), lazy=True)
 
     def __init__(self, username, password) -> None:
         self.username = username
@@ -66,12 +67,23 @@ class User(db.Model):
             return None
 
 
+class TaskStatus(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    label = db.Column(db.String(32), nullable=False)
+    color = db.Column(db.String(16), default="green", nullable=False)
+    is_complete = db.Column(db.Boolean, default=False, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+    tasks = db.relationship("Task", backref=db.backref("status"), lazy=True)
+
+
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     complete = db.Column(db.Boolean, default=False, nullable=False)
     description = db.Column(db.Text)
     due_date = db.Column(db.DateTime)
+    status_id = db.Column(db.Integer, db.ForeignKey("task_status.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     parent_id = db.Column(db.Integer, db.ForeignKey("task.id"))
     created_date = db.Column(db.DateTime, nullable=False)
