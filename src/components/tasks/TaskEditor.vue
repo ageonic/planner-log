@@ -16,6 +16,14 @@
           label="Description"
         />
       </div>
+      <div class="col-span-1">
+        <TextSelect
+          v-model="form.status_id"
+          name="task-status"
+          label="Status"
+          :options="taskStatusOptions"
+        />
+      </div>
     </div>
     <div class="mt-4">
       <button
@@ -60,23 +68,33 @@
 </template>
 
 <script>
+import { onMounted } from "@vue/runtime-core";
 import { reactive } from "@vue/reactivity";
 import TextArea from "../ui/inputs/TextArea.vue";
 import TextInput from "../ui/inputs/TextInput.vue";
-import { createOneTask, updateOneTask } from "../../services/TaskApi";
+import TextSelect from "../ui/inputs/TextSelect.vue";
+import {
+  createOneTask,
+  updateOneTask,
+  getTaskStatusList,
+} from "../../services/TaskApi";
 
 export default {
-  components: { TextArea, TextInput },
+  components: { TextArea, TextInput, TextSelect },
   props: {
     taskId: { type: Number },
     name: { type: String, default: "" },
     description: { type: String, default: "" },
+    statusId: { type: Number },
     parentId: { type: Number, default: 0 },
   },
   emits: ["cancel", "create", "update"],
   setup(props, { emit }) {
+    const taskStatusOptions = reactive([]);
     const form = reactive({
       name: props.name,
+      description: props.description,
+      status_id: props.statusId,
       parent_id: props.parentId,
     });
 
@@ -92,7 +110,18 @@ export default {
       emit("cancel");
     };
 
-    return { form, submit, cancel };
+    onMounted(() => {
+      getTaskStatusList().then((data) => {
+        data.forEach((status) => {
+          taskStatusOptions.push({
+            label: status.label,
+            value: status.id,
+          });
+        });
+      });
+    });
+
+    return { taskStatusOptions, form, submit, cancel };
   },
 };
 </script>
