@@ -1,9 +1,13 @@
 from flask import g, Blueprint, abort, request
 from flask_restful import Api, Resource, marshal_with
 from auth.helper import token_required
-from task.serializers import task_serializer, task_tree_serializer
+from task.serializers import (
+    task_status_serializer,
+    task_serializer,
+    task_tree_serializer,
+)
 
-from models import db, Task
+from models import db, Task, TaskStatus
 
 # initialize blueprint and api
 bp = Blueprint("task", __name__)
@@ -18,6 +22,28 @@ def get_task_or_403(task_id):
         abort(403, "insufficient access to the requested task")
 
     return task
+
+
+class TaskStatusList(Resource):
+    """Retrieve a list of all task statuses or create a single task status for the current user."""
+
+    @token_required
+    @marshal_with(task_status_serializer)
+    def get(self):
+        return TaskStatus.query.filter_by(user_id=g.user.id).all()
+
+    @token_required
+    @marshal_with(task_serializer)
+    def post(self):
+        data = request.get_json()
+        status = TaskStatus(
+            label=data.get("label"),
+            color=data.get("color"),
+            user_id=g.user.id,
+        )
+        db.session.add(status)
+        db.session.commit()
+        return status
 
 
 class TaskEntry(Resource):
@@ -74,6 +100,7 @@ class TaskList(Resource):
         task = Task(
             name=data.get("name"),
             parent_id=data.get("parent_id"),
+            status_id=data.get("status_id"),
             user_id=g.user.id,
         )
         db.session.add(task)
@@ -82,6 +109,7 @@ class TaskList(Resource):
 
 
 # make routes available to the api
+api.add_resource(TaskStatusList, "/status")
 api.add_resource(TaskList, "", "/")
 api.add_resource(TaskTree, "/tree/<int:id>")
 api.add_resource(TaskEntry, "/<int:id>")

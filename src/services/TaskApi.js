@@ -14,6 +14,16 @@ axios.interceptors.request.use(
   }
 );
 
+export function getTaskStatusList() {
+  return axios
+    .get("/api/task/status")
+    .then((response) => response.data)
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => console.error(error.response.data.message));
+}
+
 export function createOneTask(taskData) {
   return axios
     .post("/api/task", taskData)
