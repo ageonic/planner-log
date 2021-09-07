@@ -40,7 +40,7 @@ export default {
 
     const refreshTasks = () => {
       tasks.splice(0);
-      getFilteredTasks({ parent_id: "" }).then((data) => {
+      getFilteredTasks({ parent_id: 0 }).then((data) => {
         if (data) tasks.push(...data);
       });
     };
