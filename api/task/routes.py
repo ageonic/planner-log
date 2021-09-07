@@ -91,7 +91,18 @@ class TaskList(Resource):
     @token_required
     @marshal_with(task_serializer)
     def get(self):
-        return Task.query.filter_by(user_id=g.user.id).all()
+        base_query = Task.query.filter(Task.user_id == g.user.id)
+
+        accepted_filters = ["parent_id", "status_id"]
+
+        for key in accepted_filters:
+            if key in request.args:
+                base_query = base_query.filter(
+                    getattr(Task, key)
+                    == (None if request.args.get(key) == "" else request.args.get(key))
+                )
+
+        return base_query.all()
 
     @token_required
     @marshal_with(task_serializer)

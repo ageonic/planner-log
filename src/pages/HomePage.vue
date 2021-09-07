@@ -22,7 +22,7 @@
 
 <script>
 import { ref, reactive, onMounted } from "vue";
-import { getAllTasks } from "../services/TaskApi";
+import { getFilteredTasks } from "../services/TaskApi";
 import TaskDetail from "../components/tasks/TaskDetail.vue";
 import TaskList from "../components/tasks/TaskList.vue";
 
@@ -40,7 +40,7 @@ export default {
 
     const refreshTasks = () => {
       tasks.splice(0);
-      getAllTasks().then((data) => {
+      getFilteredTasks({ parent_id: "" }).then((data) => {
         if (data) tasks.push(...data);
       });
     };

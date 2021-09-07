@@ -72,6 +72,15 @@ export function deleteOneTask(taskId) {
     .catch((error) => console.error(error.response.data.message));
 }
 
+export function getFilteredTasks(params) {
+  return axios
+    .get("/api/task", { params: params })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => console.error(error.response.data.message));
+}
+
 export function getAllTasks() {
   return axios
     .get("/api/task")
