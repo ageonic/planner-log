@@ -67,6 +67,22 @@ class User(db.Model):
             return None
 
 
+class DailyEntry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+    task_entries = db.relationship(
+        "DailyTaskEntry", backref=db.backref("daily_entry"), lazy=True
+    )
+
+
+class DailyTaskEntry(db.Model):
+    daily_entry_id = db.Column(db.ForeignKey("daily_entry.id"), primary_key=True)
+    task_id = db.Column(db.ForeignKey("task.id"), primary_key=True)
+    complete = db.Column(db.Boolean, default=False, nullable=False)
+
+
 class TaskStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     label = db.Column(db.String(32), nullable=False)
@@ -93,6 +109,10 @@ class Task(db.Model):
         backref=db.backref("parent", remote_side=[id]),
         lazy=True,
         cascade="all,delete",
+    )
+
+    daily_task_entries = db.relationship(
+        "DailyTaskEntry", backref=db.backref("task"), lazy=True
     )
 
     def __init__(self, **kwargs):
