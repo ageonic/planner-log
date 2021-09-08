@@ -7,7 +7,7 @@ from task.serializers import (
     task_tree_serializer,
 )
 
-from models import db, Task, TaskStatus
+from models import db, Task, TaskStatus, Tag
 
 # initialize blueprint and api
 bp = Blueprint("task", __name__)
@@ -61,7 +61,10 @@ class TaskEntry(Resource):
         task = get_task_or_403(id)
 
         for k, v in data.items():
-            setattr(task, k, v)
+            if k != "tags":
+                setattr(task, k, v)
+
+        task.tags = Tag.query.filter(Tag.id.in_(data.get("tags") or [])).all()
 
         db.session.add(task)
         db.session.commit()
@@ -114,6 +117,7 @@ class TaskList(Resource):
             status_id=data.get("status_id"),
             user_id=g.user.id,
         )
+        task.tags = Tag.query.filter(Tag.id.in_(data.get("tags") or [])).all()
         db.session.add(task)
         db.session.commit()
         return task

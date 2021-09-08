@@ -87,6 +87,7 @@ export default {
     description: { type: String, default: "" },
     statusId: { type: Number },
     parentId: { type: Number, default: 0 },
+    tagIds: { type: Array, default: [] },
   },
   emits: ["cancel", "create", "update"],
   setup(props, { emit }) {
@@ -96,6 +97,7 @@ export default {
       description: props.description,
       status_id: props.statusId,
       parent_id: props.parentId,
+      tags: props.tagIds,
     });
 
     const submit = () => {
