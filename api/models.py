@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from sqlalchemy import MetaData
 
 from flask import current_app
@@ -126,6 +126,8 @@ class Task(db.Model):
 
     tags = db.relationship("Tag", secondary=task_tag)
 
+    clocked_time = db.relationship("TaskClock", backref=db.backref("task"), lazy=True)
+
     daily_task_entries = db.relationship(
         "DailyTaskEntry", backref=db.backref("task"), lazy=True
     )
@@ -140,3 +142,19 @@ class Task(db.Model):
     def owned_by_user(self, user_id):
         """Determines whether the current task is related to the specified user"""
         return self.user_id == user_id
+
+    def total_time(self):
+        return sum([clock.total_time() for clock in self.clocked_time], timedelta())
+
+    def total_subtask_time(self):
+        return sum([subtask.total_time() for subtask in self.subtasks], timedelta())
+
+
+class TaskClock(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    task_id = db.Column(db.Integer, db.ForeignKey("task.id"), nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False)
+    stop_time = db.Column(db.DateTime)
+
+    def total_time(self):
+        return self.stop_time - self.start_time
