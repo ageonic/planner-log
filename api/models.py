@@ -93,6 +93,19 @@ class TaskStatus(db.Model):
     tasks = db.relationship("Task", backref=db.backref("status"), lazy=True)
 
 
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    label = db.Column(db.String(32), nullable=False)
+
+
+task_tag = db.Table(
+    "task_tag",
+    db.Model.metadata,
+    db.Column("task_id", db.ForeignKey("task.id")),
+    db.Column("tag_id", db.ForeignKey("tag.id")),
+)
+
+
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
@@ -110,6 +123,8 @@ class Task(db.Model):
         lazy=True,
         cascade="all,delete",
     )
+
+    tags = db.relationship("Tag", secondary=task_tag)
 
     daily_task_entries = db.relationship(
         "DailyTaskEntry", backref=db.backref("task"), lazy=True
