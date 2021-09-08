@@ -2,6 +2,12 @@ from flask_restful import fields
 
 ## objects that will be used to serialize flask-sqlalchemy models
 
+# base representation of a tag
+tag_serializer = {
+    "id": fields.Integer,
+    "label": fields.String,
+}
+
 # base representation of a task status
 task_status_serializer = {
     "id": fields.Integer,
@@ -20,6 +26,7 @@ task_serializer = {
     "created_date": fields.DateTime,
     "parent_id": fields.Integer,
     "status": fields.Nested(task_status_serializer),
+    "tags": fields.Nested(tag_serializer),
 }
 
 # task along with subtasks
