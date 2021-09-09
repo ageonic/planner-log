@@ -16,6 +16,18 @@ task_status_serializer = {
     "is_complete": fields.Boolean,
 }
 
+# base representation of a task clock
+task_clock_serializer = {
+    "id": fields.Integer,
+    "start_time": fields.String(attribute=lambda c: str(c.start_time)),
+    "stop_time": fields.String(
+        attribute=lambda c: str(c.stop_time) if c.stop_time else ""
+    ),
+    "total_time": fields.String(
+        attribute=lambda c: str(c.total_time()) if c.stop_time else ""
+    ),
+}
+
 # base representation of a task
 task_serializer = {
     "id": fields.Integer,
@@ -27,6 +39,7 @@ task_serializer = {
     "parent_id": fields.Integer,
     "status": fields.Nested(task_status_serializer),
     "tags": fields.Nested(tag_serializer),
+    "clocked_time": fields.Nested(task_clock_serializer),
 }
 
 # task along with subtasks

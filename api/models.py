@@ -55,6 +55,15 @@ class User(db.Model):
         serializer = Serializer(current_app.config["SECRET_KEY"], expires_in=expiration)
         return serializer.dumps({"user_id": self.id})
 
+    def has_running_clock(self):
+        return any([task.has_running_clock() for task in self.tasks])
+
+    def get_running_clock(self):
+        task_with_running_clock = next(
+            filter(lambda task: task.has_running_clock(), self.tasks), None
+        )
+        return task_with_running_clock.get_running_clock()
+
     @staticmethod
     def verify_auth_token(token):
         serializer = Serializer(current_app.config["SECRET_KEY"])
@@ -143,6 +152,12 @@ class Task(db.Model):
         """Determines whether the current task is related to the specified user"""
         return self.user_id == user_id
 
+    def has_running_clock(self):
+        return any([clock.is_running() for clock in self.clocked_time])
+
+    def get_running_clock(self):
+        return next(filter(lambda clock: clock.is_running(), self.clocked_time), None)
+
     def total_time(self):
         return sum([clock.total_time() for clock in self.clocked_time], timedelta())
 
@@ -155,6 +170,9 @@ class TaskClock(db.Model):
     task_id = db.Column(db.Integer, db.ForeignKey("task.id"), nullable=False)
     start_time = db.Column(db.DateTime, nullable=False)
     stop_time = db.Column(db.DateTime)
+
+    def is_running(self):
+        return self.stop_time is None
 
     def total_time(self):
         return self.stop_time - self.start_time

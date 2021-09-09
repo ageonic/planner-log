@@ -89,3 +89,12 @@ export function getAllTasks() {
     })
     .catch((error) => console.error(error.response.data.message));
 }
+
+export function toggleClock(task_id) {
+  return axios
+    .post(`/api/task/clock/toggle/${task_id}`)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => console.error(error.message));
+}

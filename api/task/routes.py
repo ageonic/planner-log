@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from flask import g, Blueprint, abort, request
 from flask_restful import Api, Resource, marshal_with
 from auth.helper import token_required
@@ -7,7 +8,7 @@ from task.serializers import (
     task_tree_serializer,
 )
 
-from models import db, Task, TaskStatus, Tag
+from models import db, Task, TaskStatus, Tag, TaskClock
 
 # initialize blueprint and api
 bp = Blueprint("task", __name__)
@@ -123,8 +124,38 @@ class TaskList(Resource):
         return task
 
 
+class TaskClockToggler(Resource):
+    """Start or stop a running clock on a specified task."""
+
+    @token_required
+    def post(self, task_id):
+        if g.user.has_running_clock():
+            user_clock = g.user.get_running_clock()
+            if user_clock.task_id != task_id:
+                user_clock.stop_time = datetime.now(tz=timezone.utc)
+                db.session.add(user_clock)
+
+        task = get_task_or_403(task_id)
+
+        if task.has_running_clock():
+            clock = task.get_running_clock()
+            clock.stop_time = datetime.now(tz=timezone.utc)
+        else:
+            clock = TaskClock(task_id=task.id, start_time=datetime.now(tz=timezone.utc))
+
+        db.session.add(clock)
+        db.session.commit()
+
+        return {
+            "task_id": task.id,
+            "clock_id": clock.id,
+            "running": task.has_running_clock(),
+        }
+
+
 # make routes available to the api
 api.add_resource(TaskStatusList, "/status")
 api.add_resource(TaskList, "", "/")
 api.add_resource(TaskTree, "/tree/<int:id>")
 api.add_resource(TaskEntry, "/<int:id>")
+api.add_resource(TaskClockToggler, "/clock/toggle/<int:task_id>")
