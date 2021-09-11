@@ -1,9 +1,23 @@
 <template>
-  <div class="p-3 rounded-sm shadow-sm bg-white flex items-center">
+  <div class="p-2 rounded-sm shadow-sm bg-white flex items-center">
     <div class="mx-3">
       <StatusIndicator :color="color" />
     </div>
-    <div @click="$emit('select')" class="mx-3 flex-grow truncate">
+    <div
+      @click="$emit('select')"
+      @keyup.enter="$emit('select')"
+      role="button"
+      tabindex="0"
+      class="
+        mx-3
+        p-1
+        flex-grow
+        truncate
+        cursor-pointer
+        focus:outline-none
+        focus:ring-2 focus:ring-indigo-200
+      "
+    >
       {{ name }}
     </div>
     <TaskTimer

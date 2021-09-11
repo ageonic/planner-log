@@ -1,17 +1,5 @@
 <template>
-  <div
-    v-for="task in tasks"
-    :key="task.id"
-    class="
-      my-2
-      cursor-pointer
-      focus:outline-none
-      focus:ring-2 focus:ring-indigo-200
-    "
-    role="button"
-    tabindex="0"
-    @keyup.enter="handleClick(task.id)"
-  >
+  <div v-for="task in tasks" :key="task.id" class="my-2">
     <TaskListItem
       :taskId="task.id"
       :name="task.name"
