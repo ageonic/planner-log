@@ -23,9 +23,7 @@ task_clock_serializer = {
     "stop_time": fields.String(
         attribute=lambda c: str(c.stop_time) if c.stop_time else ""
     ),
-    "total_time": fields.String(
-        attribute=lambda c: str(c.total_time()) if c.stop_time else ""
-    ),
+    "total_time": fields.String(attribute=lambda c: c.total_time().total_seconds()),
 }
 
 # base representation of a task
@@ -40,6 +38,12 @@ task_serializer = {
     "status": fields.Nested(task_status_serializer),
     "tags": fields.Nested(tag_serializer),
     "clocked_time": fields.Nested(task_clock_serializer),
+    "has_running_clock": fields.Boolean(attribute=lambda c: c.has_running_clock()),
+    "running_clock_time": fields.Integer(
+        attribute=lambda t: t.get_running_clock().total_time().total_seconds()
+        if t.has_running_clock()
+        else 0
+    ),
 }
 
 # task along with subtasks

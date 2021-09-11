@@ -175,4 +175,12 @@ class TaskClock(db.Model):
         return self.stop_time is None
 
     def total_time(self):
+        # return the time elapsed since the start_time if the clock is currently active
+        if self.is_running():
+            # note that the timezone information is lost when the datetime is stored in the database
+            # the start_time tzinfo must be set explicitly since the api routes store it in UTC
+            return datetime.now(tz=timezone.utc) - self.start_time.replace(
+                tzinfo=timezone.utc
+            )
+
         return self.stop_time - self.start_time

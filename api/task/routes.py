@@ -6,6 +6,7 @@ from task.serializers import (
     task_status_serializer,
     task_serializer,
     task_tree_serializer,
+    task_clock_serializer,
 )
 
 from models import db, Task, TaskStatus, Tag, TaskClock
@@ -128,6 +129,7 @@ class TaskClockToggler(Resource):
     """Start or stop a running clock on a specified task."""
 
     @token_required
+    @marshal_with(task_clock_serializer)
     def post(self, task_id):
         if g.user.has_running_clock():
             user_clock = g.user.get_running_clock()
@@ -146,11 +148,7 @@ class TaskClockToggler(Resource):
         db.session.add(clock)
         db.session.commit()
 
-        return {
-            "task_id": task.id,
-            "clock_id": clock.id,
-            "running": task.has_running_clock(),
-        }
+        return clock
 
 
 # make routes available to the api
