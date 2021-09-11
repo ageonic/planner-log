@@ -28,7 +28,7 @@
 
 <script>
 import { computed, ref } from "@vue/reactivity";
-import { watch } from "@vue/runtime-core";
+import { onMounted, watch } from "@vue/runtime-core";
 import { PlayIcon, StopIcon } from "@heroicons/vue/solid";
 import TaskStore from "../../store/Task";
 
@@ -36,11 +36,13 @@ export default {
   components: { PlayIcon, StopIcon },
   props: {
     taskId: { type: Number, required: true },
+    running: { type: Boolean, default: false },
+    seconds: { type: Number, default: 0 },
   },
   emits: ["start", "stop"],
   setup(props) {
-    const running = ref(false);
-    const seconds = ref(0);
+    const running = ref(props.running);
+    const seconds = ref(props.seconds);
     const timestamp = computed(() =>
       new Date(1000 * seconds.value).toISOString().substr(11, 8)
     );
@@ -58,6 +60,10 @@ export default {
       running.value = false;
       seconds.value = 0;
     };
+
+    onMounted(() => {
+      if (props.running) start();
+    });
 
     watch(TaskStore.state, () => {
       if (

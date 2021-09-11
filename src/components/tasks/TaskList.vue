@@ -10,7 +10,6 @@
     "
     role="button"
     tabindex="0"
-    @click="handleClick(task.id)"
     @keyup.enter="handleClick(task.id)"
   >
     <TaskListItem
@@ -18,6 +17,9 @@
       :name="task.name"
       :status="task.status.label"
       :color="task.status.color"
+      :clockRunning="task.has_running_clock"
+      :clockSeconds="task.running_clock_time"
+      @select="handleClick(task.id)"
     />
   </div>
 </template>
