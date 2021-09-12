@@ -3,7 +3,7 @@
     <TaskListItem
       :taskId="task.id"
       :name="task.name"
-      :status="task.status.label"
+      :status="task.status"
       :color="task.status.color"
       :clockRunning="task.has_running_clock"
       :clockSeconds="task.running_clock_time"

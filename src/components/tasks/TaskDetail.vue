@@ -5,11 +5,8 @@
       class="border-b-2 border-gray-100 flex items-center px-8 py-4"
     >
       <div class="flex flex-grow items-center">
-        <div class="mr-2">
-          <StatusIndicator :color="task.status && task.status.color" />
-        </div>
-        <div class="flex-grow capitalize text-gray-300">
-          {{ task.status && task.status.label }}
+        <div v-if="task.status" class="flex-grow">
+          <TaskStatusEditor :taskStatus="task.status" />
         </div>
         <div v-if="!editMode">
           <button
@@ -98,12 +95,12 @@
 import { onMounted, reactive, ref } from "@vue/runtime-core";
 import { PlusIcon } from "@heroicons/vue/solid";
 import { deleteOneTask, getOneTask } from "../../services/TaskApi.js";
-import StatusIndicator from "../ui/StatusIndicator.vue";
+import TaskStatusEditor from "../tasks/TaskStatusEditor.vue";
 import TaskEditor from "./TaskEditor.vue";
 import TaskList from "./TaskList.vue";
 
 export default {
-  components: { PlusIcon, StatusIndicator, TaskEditor, TaskList },
+  components: { PlusIcon, TaskStatusEditor, TaskEditor, TaskList },
   props: {
     taskId: { type: Number, required: true },
   },
