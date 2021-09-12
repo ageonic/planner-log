@@ -11,7 +11,7 @@
     "
     class="p-1 focus:outline-none focus:ring-2 focus:ring-indigo-200"
   >
-    <PlayIcon class="w-6 text-indigo-400 hover:text-indigo-600" />
+    <PlayIcon class="h-6 w-6 text-indigo-400 hover:text-indigo-600" />
   </button>
   <button
     v-if="running"
@@ -22,7 +22,7 @@
     "
     class="p-1 focus:outline-none focus:ring-2 focus:ring-indigo-200"
   >
-    <StopIcon class="w-6 text-indigo-400 hover:text-indigo-600" />
+    <StopIcon class="h-6 w-6 text-indigo-400 hover:text-indigo-600" />
   </button>
 </template>
 
