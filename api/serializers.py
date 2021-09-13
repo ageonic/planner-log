@@ -50,3 +50,17 @@ task_serializer = {
 # this includes subtasks for subtasks as well
 task_tree_serializer = {k: v for k, v in task_serializer.items()}
 task_tree_serializer["subtasks"] = fields.Nested(task_tree_serializer)
+
+# base representation of a daily task entry
+daily_task_entry_serializer = {
+    "id": fields.Integer,
+    "task": fields.Nested(task_serializer),
+    "complete": fields.Boolean,
+}
+
+# base representation of a daily entry
+daily_entry_serializer = {
+    "id": fields.Integer,
+    "created_date": fields.DateTime,
+    "task_entries": fields.List(fields.Nested(daily_task_entry_serializer)),
+}
