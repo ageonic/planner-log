@@ -3,11 +3,10 @@
     <button
       @click="toggleDropdown"
       class="
-        p-2
+        p-1
         z-10
         relative
         bg-white
-        rounded-md
         focus:outline-none
         focus:ring-2 focus:ring-indigo-200
         flex
