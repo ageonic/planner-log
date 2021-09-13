@@ -1,7 +1,11 @@
 <template>
   <div class="p-2 rounded-sm shadow-sm bg-white flex items-center">
     <div class="mx-3">
-      <StatusIndicator :color="color" />
+      <TaskStatusEditor
+        :taskId="taskId"
+        :taskStatus="status"
+        :showLabel="false"
+      />
     </div>
     <div
       @click="$emit('select')"
@@ -31,16 +35,24 @@
 </template>
 
 <script>
-import StatusIndicator from "../ui/StatusIndicator.vue";
+import TaskStatusEditor from "../tasks/TaskStatusEditor.vue";
 import TaskTimer from "./TaskTimer.vue";
 import { toggleClock } from "../../services/TaskApi";
 
 export default {
-  components: { StatusIndicator, TaskTimer },
+  components: { TaskStatusEditor, TaskTimer },
   props: {
     taskId: { type: Number, required: true },
     name: { type: String, required: true },
-    status: { type: String, required: true },
+    status: {
+      type: Object,
+      required: true,
+      validator(value) {
+        return ["color", "label"].every((key) =>
+          Object.keys(value).includes(key)
+        );
+      },
+    },
     color: { type: String, required: true },
     clockRunning: { type: Boolean, default: false },
     clockSeconds: { type: Number, default: 0 },
