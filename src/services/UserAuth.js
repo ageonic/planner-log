@@ -16,7 +16,7 @@ class UserAuth {
         UserStore.methods.setAuthToken(data.token);
       })
       .catch((e) => {
-        console.log(e.response.data.message);
+        return e.response.data.message;
       });
   }
 
