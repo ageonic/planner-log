@@ -36,7 +36,6 @@
         :taskId="task.id"
         :name="task.name"
         :description="task.description"
-        :statusId="task.status.id"
         :parentId="task.parent_id"
         @update="handleUpdate"
         @cancel="editMode = false"
