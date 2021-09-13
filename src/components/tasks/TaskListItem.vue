@@ -1,7 +1,11 @@
 <template>
   <div class="p-2 rounded-sm shadow-sm bg-white flex items-center">
     <div class="mx-3">
-      <TaskStatusEditor :taskStatus="status" :showLabel="false" />
+      <TaskStatusEditor
+        :taskId="taskId"
+        :taskStatus="status"
+        :showLabel="false"
+      />
     </div>
     <div
       @click="$emit('select')"

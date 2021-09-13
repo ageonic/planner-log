@@ -4,9 +4,9 @@
       name="header"
       class="border-b-2 border-gray-100 flex items-center px-8 py-4"
     >
-      <div class="flex flex-grow items-center">
-        <div v-if="task.status" class="flex-grow">
-          <TaskStatusEditor :taskStatus="task.status" />
+      <div class="flex flex-grow justify-between">
+        <div v-if="task.status" class="">
+          <TaskStatusEditor :taskId="taskId" :taskStatus="task.status" />
         </div>
         <div v-if="!editMode">
           <button
