@@ -2,14 +2,14 @@ from datetime import datetime, timezone
 from flask import g, Blueprint, abort, request
 from flask_restful import Api, Resource, marshal_with
 from auth.helper import token_required
-from task.serializers import (
+
+from models import db, Task, TaskStatus, Tag, TaskClock
+from serializers import (
     task_status_serializer,
     task_serializer,
     task_tree_serializer,
     task_clock_serializer,
 )
-
-from models import db, Task, TaskStatus, Tag, TaskClock
 
 # initialize blueprint and api
 bp = Blueprint("task", __name__)
