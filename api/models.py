@@ -88,7 +88,6 @@ class DailyEntry(db.Model):
 
     def __init__(self, **kwargs):
         super(DailyEntry, self).__init__(**kwargs)
-        self.date = datetime.now(tz=timezone.utc).date()
         self.created_date = datetime.now(tz=timezone.utc)
 
 
