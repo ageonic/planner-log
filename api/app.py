@@ -19,9 +19,11 @@ def create_app(config_name=default_config_name):
 
     # register flask blueprints
     from auth.routes import bp as auth_bp
+    from planner.routes import bp as planner_bp
     from task.routes import bp as task_bp
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
+    app.register_blueprint(planner_bp, url_prefix="/api/planner")
     app.register_blueprint(task_bp, url_prefix="/api/task")
 
     return app

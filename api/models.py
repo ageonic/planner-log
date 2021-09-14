@@ -78,12 +78,17 @@ class User(db.Model):
 
 class DailyEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    created_date = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
     task_entries = db.relationship(
         "DailyTaskEntry", backref=db.backref("daily_entry"), lazy=True
     )
+
+    def __init__(self, **kwargs):
+        super(DailyEntry, self).__init__(**kwargs)
+        self.created_date = datetime.now(tz=timezone.utc)
 
 
 class DailyTaskEntry(db.Model):
