@@ -45,8 +45,10 @@
       name="subtasks"
       class="p-8 bg-gray-50 border-t-2 border-b-2 border-gray-100"
     >
-      <h2>Subtasks for {{ task.name }}</h2>
-      <TaskList :tasks="task.subtasks" />
+      <TaskList
+        :tasks="task.subtasks"
+        @select="$emit('subtask-select', $event)"
+      />
       <button
         v-if="!showSubtaskCreator"
         @click="showSubtaskCreator = true"
@@ -91,7 +93,7 @@
 </template>
 
 <script>
-import { onMounted, reactive, ref } from "@vue/runtime-core";
+import { onMounted, reactive, ref, watch } from "@vue/runtime-core";
 import { PlusIcon } from "@heroicons/vue/solid";
 import { deleteOneTask, getOneTask } from "../../services/TaskApi.js";
 import TaskStatusEditor from "../tasks/TaskStatusEditor.vue";
@@ -126,6 +128,11 @@ export default {
     onMounted(() => {
       refresh();
     });
+
+    watch(
+      () => props.taskId,
+      () => refresh()
+    );
 
     return {
       task,
