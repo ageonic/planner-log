@@ -116,7 +116,8 @@ class TaskList(Resource):
         task = Task(
             name=data.get("name"),
             parent_id=data.get("parent_id"),
-            status_id=data.get("status_id"),
+            status_id=data.get("status_id")
+            or TaskStatus.query.filter_by(default=True, user_id=g.user.id).first().id,
             user_id=g.user.id,
         )
         task.tags = Tag.query.filter(Tag.id.in_(data.get("tags") or [])).all()

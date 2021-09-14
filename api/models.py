@@ -101,6 +101,7 @@ class TaskStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     label = db.Column(db.String(32), nullable=False)
     color = db.Column(db.String(16), default="green", nullable=False)
+    default = db.Column(db.Boolean, default=False)
     is_complete = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
