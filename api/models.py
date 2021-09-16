@@ -168,7 +168,9 @@ class Task(db.Model):
         return sum([clock.total_time() for clock in self.clocked_time], timedelta())
 
     def total_subtask_time(self):
-        return sum([subtask.total_time() for subtask in self.subtasks], timedelta())
+        return sum(
+            [subtask.total_subtask_time() for subtask in self.subtasks], timedelta()
+        )
 
 
 class TaskClock(db.Model):
