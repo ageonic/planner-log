@@ -26,6 +26,47 @@ def get_task_or_403(task_id):
     return task
 
 
+def get_task_status_or_403(task_status_id):
+    """Retrieve a specified task status and abort if it does not belong to the logged in user."""
+    status = TaskStatus.query.get_or_404(task_status_id)
+
+    if not status.owned_by_user(g.user.id):
+        abort(403, "insufficient access to the requested task status")
+
+    return status
+
+
+class TaskStatusEntry(Resource):
+    """Retrieve, update, or delete a task status."""
+
+    @token_required
+    @marshal_with(task_status_serializer)
+    def get(self, id):
+        return get_task_status_or_403(id)
+
+    @token_required
+    @marshal_with(task_status_serializer)
+    def put(self, id):
+        data = request.get_json()
+        status = get_task_status_or_403(id)
+
+        for k, v in data.items():
+            if k != "id":
+                setattr(status, k, v)
+
+        db.session.commit()
+
+        return status
+
+    @token_required
+    def delete(self, id):
+        status = get_task_status_or_403(id)
+
+        db.session.delete(status)
+        db.session.commit()
+        return "", 201
+
+
 class TaskStatusList(Resource):
     """Retrieve a list of all task statuses or create a single task status for the current user."""
 
@@ -154,6 +195,7 @@ class TaskClockToggler(Resource):
 
 # make routes available to the api
 api.add_resource(TaskStatusList, "/status")
+api.add_resource(TaskStatusEntry, "/status/<int:id>")
 api.add_resource(TaskList, "", "/")
 api.add_resource(TaskTree, "/tree/<int:id>")
 api.add_resource(TaskEntry, "/<int:id>")

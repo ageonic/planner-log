@@ -107,6 +107,10 @@ class TaskStatus(db.Model):
 
     tasks = db.relationship("Task", backref=db.backref("status"), lazy=True)
 
+    def owned_by_user(self, user_id):
+        """Determines whether the current task status is related to the specified user"""
+        return self.user_id == user_id
+
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
