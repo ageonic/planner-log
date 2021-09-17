@@ -24,6 +24,15 @@ export function getTaskStatusList() {
     .catch((error) => console.error(error.response.data.message));
 }
 
+export function createOneTaskStatus(taskStatusData) {
+  return axios
+    .post("/api/task/status", taskStatusData)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => console.error(error.response.data.message));
+}
+
 export function getOneTaskStatus(statusId) {
   return axios
     .get(`/api/task/status/${statusId}`)

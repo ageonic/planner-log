@@ -76,12 +76,14 @@ class TaskStatusList(Resource):
         return TaskStatus.query.filter_by(user_id=g.user.id).all()
 
     @token_required
-    @marshal_with(task_serializer)
+    @marshal_with(task_status_serializer)
     def post(self):
         data = request.get_json()
         status = TaskStatus(
             label=data.get("label"),
             color=data.get("color"),
+            default=data.get("default"),
+            is_complete=data.get("is_complete"),
             user_id=g.user.id,
         )
         db.session.add(status)
