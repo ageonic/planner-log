@@ -13,6 +13,7 @@ task_status_serializer = {
     "id": fields.Integer,
     "label": fields.String,
     "color": fields.String,
+    "default": fields.Boolean,
     "is_complete": fields.Boolean,
 }
 
