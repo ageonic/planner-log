@@ -24,6 +24,32 @@ export function getTaskStatusList() {
     .catch((error) => console.error(error.response.data.message));
 }
 
+export function getOneTaskStatus(statusId) {
+  return axios
+    .get(`/api/task/status/${statusId}`)
+    .then((response) => response.data)
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => console.error(error.response.data.message));
+}
+
+export function updateOneTaskStatus(statusId, statusData) {
+  return axios
+    .put(`/api/task/status/${statusId}`, statusData)
+    .then((response) => response.data)
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => console.error(error.response.data.message));
+}
+
+export function deleteOneTaskStatus(statusId) {
+  return axios
+    .delete(`/api/task/status/${statusId}`)
+    .catch((error) => console.error(error.response.data.message));
+}
+
 export function createOneTask(taskData) {
   return axios
     .post("/api/task", taskData)
