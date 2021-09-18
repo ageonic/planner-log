@@ -115,6 +115,7 @@ class TaskStatus(db.Model):
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     label = db.Column(db.String(32), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
 
 task_tag = db.Table(
