@@ -13,6 +13,7 @@ const methods = {
     state.runningClock.taskId = taskId;
   },
   setStatusList(sl) {
+    statusList.splice(0);
     statusList.push(...sl);
   },
 };
