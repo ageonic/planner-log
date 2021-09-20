@@ -158,6 +158,7 @@ class TaskList(Resource):
         data = request.get_json()
         task = Task(
             name=data.get("name"),
+            description=data.get("description"),
             parent_id=data.get("parent_id"),
             status_id=data.get("status_id")
             or TaskStatus.query.filter_by(default=True, user_id=g.user.id).first().id,
