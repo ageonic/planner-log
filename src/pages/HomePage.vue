@@ -1,42 +1,28 @@
 <template>
-  <button
-    class="my-2 p-2 bg-indigo-400 text-white rounded-md"
-    v-if="showDetail"
-    @click="
-      showDetail = false;
+  <button v-if="!showEditor" @click="showEditor = true">New</button>
+  <TaskEditor
+    v-if="showEditor"
+    @create="
       refreshTasks();
+      showEditor = false;
     "
-  >
-    Back
-  </button>
-  <TaskDetail
-    v-if="currentTaskId && showDetail"
-    :taskId="currentTaskId"
-    @delete="
-      showDetail = false;
-      refreshTasks();
-    "
+    @cancel="showEditor = false"
   />
-  <TaskList v-if="!showDetail" :tasks="tasks" @select="handleSelect"></TaskList>
+  <TaskList :tasks="tasks" @select="router.push(`/task/${$event}`)"></TaskList>
 </template>
 
 <script>
-import { ref, reactive, onMounted } from "vue";
+import { reactive, onMounted, ref } from "vue";
 import { getFilteredTasks } from "../services/TaskApi";
-import TaskDetail from "../components/tasks/TaskDetail.vue";
+import TaskEditor from "../components/tasks/TaskEditor.vue";
 import TaskList from "../components/tasks/TaskList.vue";
+import { router } from "../router";
 
 export default {
-  components: { TaskDetail, TaskList },
+  components: { TaskEditor, TaskList },
   setup() {
-    const showDetail = ref(false);
     const tasks = reactive([]);
-    const currentTaskId = ref(null);
-
-    const handleSelect = (targetId) => {
-      currentTaskId.value = targetId;
-      showDetail.value = true;
-    };
+    const showEditor = ref(false);
 
     const refreshTasks = () => {
       tasks.splice(0);
@@ -50,10 +36,9 @@ export default {
     });
 
     return {
-      showDetail,
+      router,
       tasks,
-      currentTaskId,
-      handleSelect,
+      showEditor,
       refreshTasks,
     };
   },
